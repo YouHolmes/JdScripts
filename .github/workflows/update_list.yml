@@ -1,0 +1,35 @@
+name: update_list
+
+
+on:
+  workflow_dispatch:
+  #schedule:
+    #- cron: '1 5,17 * * *'
+  repository_dispatch:
+    types: update_list
+  push:
+    branches: [ master ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    #if: github.event.repository.owner.id == github.event.sender.id
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ github.repository }}
+
+      - name: "更新Readme中脚本清单列表"
+        run: |
+          bash update_list.sh
+      - name: commit
+        run: |
+          git config --global user.email ${{ secrets.EMAIL }}
+          git config --global user.name lxk0301
+          git add .
+          git commit -m "更新Readme中脚本清单列表 by lxk0301 Github Action" -a || echo "Nothing to update"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.TOKEN }}
+          branch: master

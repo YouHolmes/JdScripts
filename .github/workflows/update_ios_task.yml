@@ -1,0 +1,35 @@
+name: update_ios_task
+
+
+on:
+  workflow_dispatch:
+  #schedule:
+    #- cron: '0 4,16 * * *'
+  repository_dispatch:
+    types: update_ios_task
+  push:
+    branches: [ master ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    #if: github.event.repository.owner.id == github.event.sender.id
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ github.repository }}
+
+      - name: "更新iOS端3大订阅软件订阅配置"
+        run: |
+          bash update_task.sh
+      - name: commit
+        run: |
+          git config --global user.email ${{ secrets.EMAIL }}
+          git config --global user.name lxk0301
+          git add .
+          git commit -m "更新iOS端3大软件订阅配置 by lxk0301 Github Action" -a || echo "Nothing to update"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.TOKEN }}
+          branch: master
