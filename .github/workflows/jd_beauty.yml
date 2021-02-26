@@ -1,15 +1,16 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: jd_jxnc
+name: jd_beauty
+
 on:
   workflow_dispatch:
   schedule:
-    - cron: '5 0 * * *'
+    - cron: '1 7,12,19 * * *'
   watch:
     types: started
   repository_dispatch:
-    types: jxnc
+    types: beauty
 jobs:
   build:
 
@@ -34,9 +35,9 @@ jobs:
       - name: npm install
         run: |
           npm install
-      - name: '运行 【京喜农场】'
+      - name: '运行 【美丽研究院】'
         run: |
-          node jd_jxnc.js
+          node beauty.js
         env:
           JD_COOKIE: ${{ secrets.JD_COOKIE }}
           JD_DEBUG: ${{ secrets.JD_DEBUG }}
@@ -48,4 +49,3 @@ jobs:
           DD_BOT_TOKEN: ${{ secrets.DD_BOT_TOKEN }}
           DD_BOT_SECRET: ${{ secrets.DD_BOT_SECRET }}
           IGOT_PUSH_KEY: ${{ secrets.IGOT_PUSH_KEY }}
-          JD_818_SHAREID_NOTIFY: ${{ secrets.JD_818_SHAREID_NOTIFY }}
