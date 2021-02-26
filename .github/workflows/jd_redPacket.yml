@@ -6,7 +6,7 @@ name: jd_redPacket-全民开红包
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 17 * * *'
+    - cron: '25 16,0 * * *'
   watch:
     types: started
   repository_dispatch:

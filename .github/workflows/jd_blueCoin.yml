@@ -6,7 +6,7 @@ name: jd_blueCoin-京小超兑换
 on:
   workflow_dispatch:
   schedule:
-    - cron: '1 0 * * *'
+    - cron: '1 16 * * *'
   watch:
     types: started
   repository_dispatch:
