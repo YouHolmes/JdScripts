@@ -37,7 +37,7 @@ jobs:
           npm install
       - name: '运行 【美丽研究院】'
         run: |
-          node beauty.js
+          node jd_beauty.js
         env:
           JD_COOKIE: ${{ secrets.JD_COOKIE }}
           JD_DEBUG: ${{ secrets.JD_DEBUG }}
