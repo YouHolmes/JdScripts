@@ -1,15 +1,16 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: jd_jxnc-京喜农场
+name: jd_live_redrain-直播间红包雨
+
 on:
   workflow_dispatch:
   schedule:
-    - cron: '5 0,5 * * *'
+    - cron: '30,31 20-23/1 2,5 3 *'
   watch:
     types: started
   repository_dispatch:
-    types: jxnc
+    types: live_redrain
 jobs:
   build:
 
@@ -34,16 +35,13 @@ jobs:
       - name: npm install
         run: |
           npm install
-      - name: '运行 【京喜农场】'
+      - name: '运行 【直播间红包雨】'
         run: |
-          node jd_jxnc.js
+          node jd_live_redrain.js
         env:
           JD_COOKIE: ${{ secrets.JD_COOKIE }}
           JD_DEBUG: ${{ secrets.JD_DEBUG }}
           PUSH_KEY: ${{ secrets.PUSH_KEY }}
-          DREAM_FACTORY_SHARE_CODES: ${{ secrets.DREAM_FACTORY_SHARE_CODES }}
-          JXNC_SHARECODES: ${{ secrets.JXNC_SHARECODES }}
-          JXNCTOKENS: ${{ secrets.JXNCTOKENS }}
           BARK_PUSH: ${{ secrets.BARK_PUSH }}
           BARK_SOUND: ${{ secrets.BARK_SOUND }}
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
