@@ -29,6 +29,9 @@ let shareCodes = [
   'Sz2oS9zo11SEvR593Bex6g==@N65gxIAwuVA3p-Du05UXUg==@SM8a-mS15WpNaFcNpTX0Zg==@CntxZMVPRPrnRwDGEdKCng==@pH6VKO0hEAGgJJF1oyMhVQ==@jvPgYjr4eezesZhIicoQRg==@nI0EvC7t1MQV_YTaQKS4cA==@Gy9KrAI8iGF03ENq55vY3w==@77U7hJcIxAsrYWfQPd3qAg==@OpdZTI0kWvpwhhmKak9nTQ==@kYG2iukfwBw2HkULET49tg==',
   'Sz2oS9zo11SEvR593Bex6g==@N65gxIAwuVA3p-Du05UXUg==@SM8a-mS15WpNaFcNpTX0Zg==@CntxZMVPRPrnRwDGEdKCng==@pH6VKO0hEAGgJJF1oyMhVQ==@jvPgYjr4eezesZhIicoQRg==@nI0EvC7t1MQV_YTaQKS4cA==@Gy9KrAI8iGF03ENq55vY3w==@77U7hJcIxAsrYWfQPd3qAg==@OpdZTI0kWvpwhhmKak9nTQ==@kYG2iukfwBw2HkULET49tg==',
   'Sz2oS9zo11SEvR593Bex6g==@N65gxIAwuVA3p-Du05UXUg==@SM8a-mS15WpNaFcNpTX0Zg==@CntxZMVPRPrnRwDGEdKCng==@pH6VKO0hEAGgJJF1oyMhVQ==@jvPgYjr4eezesZhIicoQRg==@nI0EvC7t1MQV_YTaQKS4cA==@Gy9KrAI8iGF03ENq55vY3w==@77U7hJcIxAsrYWfQPd3qAg==@OpdZTI0kWvpwhhmKak9nTQ==@kYG2iukfwBw2HkULET49tg==',
+  'Sz2oS9zo11SEvR593Bex6g==@N65gxIAwuVA3p-Du05UXUg==@SM8a-mS15WpNaFcNpTX0Zg==@CntxZMVPRPrnRwDGEdKCng==@pH6VKO0hEAGgJJF1oyMhVQ==@jvPgYjr4eezesZhIicoQRg==@nI0EvC7t1MQV_YTaQKS4cA==@Gy9KrAI8iGF03ENq55vY3w==@77U7hJcIxAsrYWfQPd3qAg==@OpdZTI0kWvpwhhmKak9nTQ==@kYG2iukfwBw2HkULET49tg==',
+  'Sz2oS9zo11SEvR593Bex6g==@N65gxIAwuVA3p-Du05UXUg==@SM8a-mS15WpNaFcNpTX0Zg==@CntxZMVPRPrnRwDGEdKCng==@pH6VKO0hEAGgJJF1oyMhVQ==@jvPgYjr4eezesZhIicoQRg==@nI0EvC7t1MQV_YTaQKS4cA==@Gy9KrAI8iGF03ENq55vY3w==@77U7hJcIxAsrYWfQPd3qAg==@OpdZTI0kWvpwhhmKak9nTQ==@kYG2iukfwBw2HkULET49tg==',
+  'Sz2oS9zo11SEvR593Bex6g==@N65gxIAwuVA3p-Du05UXUg==@SM8a-mS15WpNaFcNpTX0Zg==@CntxZMVPRPrnRwDGEdKCng==@pH6VKO0hEAGgJJF1oyMhVQ==@jvPgYjr4eezesZhIicoQRg==@nI0EvC7t1MQV_YTaQKS4cA==@Gy9KrAI8iGF03ENq55vY3w==@77U7hJcIxAsrYWfQPd3qAg==@OpdZTI0kWvpwhhmKak9nTQ==@kYG2iukfwBw2HkULET49tg==',
 
 ]
 // 判断github action里面是否有京喜工厂互助码
