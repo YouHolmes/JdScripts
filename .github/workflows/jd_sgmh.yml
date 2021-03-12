@@ -6,7 +6,7 @@ name: jd_sgmh-闪购盲盒
 on:
   workflow_dispatch:
   schedule:
-    - cron: '5 5 * * *'
+    - cron: '5 1,5,9 * * *'
   watch:
     types: started
   repository_dispatch:
