@@ -48,7 +48,7 @@ const sleep = ms => new Promise(res => setTimeout(res, ms));
       }
 
       console.log(`创建函数`);
-      let inputYML = ".github/workflows/deploy_tencent_scf.yml";
+      let inputYML = ".github/workflows/deploy_tencent_scf2.yml";
       let obj = yaml.load(fs.readFileSync(inputYML, { encoding: "utf-8" }));
       params = {
         Code: {
@@ -56,9 +56,7 @@ const sleep = ms => new Promise(res => setTimeout(res, ms));
         },
         FunctionName: process.env.TENCENT_FUNCTION_NAME,
         Runtime: "Nodejs12.16",
-        MemorySize: 64,
-        Timeout: 86400,
-        AsyncRunEnable: "true",
+        Timeout: 900,
         Environment: {
           Variables: []
         }
@@ -149,7 +147,7 @@ const sleep = ms => new Promise(res => setTimeout(res, ms));
 
   // 更新触发器
   console.log(`去更新触发器`);
-  let inputYML = "serverless.yml";
+  let inputYML = "serverless2.yml";
   let obj = yaml.load(fs.readFileSync(inputYML, { encoding: "utf-8" }));
   for (let vo of obj.inputs.events) {
     let param = {
