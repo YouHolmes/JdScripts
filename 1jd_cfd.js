@@ -119,7 +119,7 @@ async function cfd() {
     try {
         const beginInfo = await getUserInfo();
 
-        await $.wait(2000);
+        /*await $.wait(2000);
         await querySignList();
 
         await $.wait(3000);
@@ -151,7 +151,7 @@ async function cfd() {
 
         //领取寻宝宝箱
         await $.wait(3000);
-        await openPeriodBox();
+        await openPeriodBox();*/
 
         //出岛寻宝大作战
         await $.wait(3000);
@@ -1197,7 +1197,7 @@ function shareCodesFormat() {
         }/* else {
             console.log(`由于您第${$.index}个京东账号未提供shareCode,将采纳本脚本自带的助力码\n`)
             // const tempIndex = $.index > inviteCodes.length ? (inviteCodes.length - 1) : ($.index - 1);
-            $.newShareCodes = [...$.strMyShareIds, "F45CB4F07997DFE748E5656521A9034446A1568F6950206B0D44A5664662275D"];
+            $.newShareCodes = [...$.strMyShareIds, "55F847754C584963484D38D53DE3FE364525E8954AA195578AF456E74DECAC92"];
         }
         const readShareCodeRes = await readShareCode();
         if (readShareCodeRes && readShareCodeRes.code === 200) {

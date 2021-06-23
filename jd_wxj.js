@@ -14,8 +14,10 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
 let allMessage = '';
-let shareCode = '949D23BA4BF155E896ED2741E763777A';
-
+let shareCode = '';
+if (process.env.SHARECODE_WXJ) {
+    shareCode = process.env.SHARECODE_WXJ;
+}
 if ($.isNode()) {
     Object.keys(jdCookieNode).forEach((item) => {
         cookiesArr.push(jdCookieNode[item])
@@ -301,7 +303,7 @@ function helpAuthor() {
         let options = {
             url: `https://api.m.jd.com/client.action`,
 
-            body: `functionId=help_activity&body={"shareCode":"${shareCode}","name":"","imageUrl":""}&client=wh5&clientVersion=1.0.0&osVersion=10&uuid=7049442d7e415232`,
+            body: `functionId=help_activity&body={"shareCode":"643D0BFC40F7B8710B354BD0D24F13D0AD1DAAB9A3E3F6CBAFDE81EEB7393333","name":"","imageUrl":""}&client=wh5&clientVersion=1.0.0&osVersion=10&uuid=7049442d7e415232`,
             headers: {
                 "Origin": "https://h5.m.jd.com",
                 "Host": "api.m.jd.com",
