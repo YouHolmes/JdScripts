@@ -1,33 +1,34 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: jd_joy-宠汪汪
+name: jd_ddopk-京享值PK
 
 on:
     workflow_dispatch:
     schedule:
-        - cron: '0 0,1,4,10,15,16 * * *'
+        - cron: "15 17,21 * * *"
     watch:
         types: [started]
     repository_dispatch:
-        types: jd_joy
+        types: jd_ddopk
 
 jobs:
     build:
         runs-on: ubuntu-latest
         if: github.event.repository.owner.id == github.event.sender.id
         steps:
-            - uses: actions/checkout@v1
-            - name: Use Node.js 10.x
+            - name: 拉取代码
+              uses: actions/checkout@v2
+            - name: Use Node.js
               uses: actions/setup-node@v1
               with:
-                  node-version: 10.x
-            - name: npm install
+                  node-version: "12.x"
+            - name: 安装依赖包
               run: |
                   npm install
-            - name: "运行 【宠汪汪🐕】"
+            - name: "运行【京享值PK】"
               run: |
-                  node jd_joy.js
+                  node jd_ddopk.js
               env:
                   JD_COOKIE: ${{ github.event.client_payload.JD_COOKIE || secrets.JD_COOKIE }}
                   JD_DEBUG: ${{ github.event.client_payload.JD_DEBUG || secrets.JD_DEBUG }}
@@ -46,10 +47,4 @@ jobs:
                   QYWX_AM: ${{ github.event.client_payload.QYWX_AM || secrets.QYWX_AM }}
                   PUSH_PLUS_TOKEN: ${{ github.event.client_payload.PUSH_PLUS_TOKEN || secrets.PUSH_PLUS_TOKEN }}
                   PUSH_PLUS_USER: ${{ github.event.client_payload.PUSH_PLUS_USER || secrets.PUSH_PLUS_USER }}
-                  JOY_FEED_COUNT: ${{ github.event.client_payload.JOY_FEED_COUNT || secrets.JOY_FEED_COUNT }}
-                  JOY_RUN_FLAG: ${{ github.event.client_payload.JOY_RUN_FLAG || secrets.JOY_RUN_FLAG }}
-                  JOY_TEAM_LEVEL: ${{ github.event.client_payload.JOY_TEAM_LEVEL || secrets.JOY_TEAM_LEVEL }}
-                  JOY_RUN_NOTIFY: ${{ github.event.client_payload.JOY_RUN_NOTIFY || secrets.JOY_RUN_NOTIFY }}
-                  SYNCURL: https://github.com/wuzhi03/MyActions/raw/main/jd_joy.js
-                  #专属配置
-                  IGNORE_COOKIE_JDJOYPET: ${{ github.event.client_payload.IGNORE_COOKIE_JDJOYPET || secrets.IGNORE_COOKIE_JDJOYPET }}
+                  SYNCURL: https://github.com/wuzhi04/MyActions/raw/main/jd_ddopk.js
