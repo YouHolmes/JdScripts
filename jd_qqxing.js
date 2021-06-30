@@ -32,7 +32,7 @@ if ($.isNode()) {
 
 const JD_API_HOST = `https://api.m.jd.com/client.action`;
 message = ""
-$.shareuuid = "26ae2052c89a4f69af0dd856041d2f0e"
+$.shareuuid = "b7b38d35069342ce8acab8f56d8d9448"
     !(async () => {
         if (!cookiesArr[0]) {
             $.msg($.name, '【提示】请先获取cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/', {
@@ -99,7 +99,7 @@ $.shareuuid = "26ae2052c89a4f69af0dd856041d2f0e"
                     let exchanges =Math.floor($.foodNum/1000)
                     console.log(`可兑换 ${exchanges} 次 20京🐶`)
                     for(q = 0;q<exchanges && Exchange;q++){
-                    await exchange(13)   
+                    await exchange(13)
                     }
                     await getinfo()
                     if(!Exchange){console.log("你 默认 不兑换东西,请自行进去活动兑换")}
@@ -307,7 +307,7 @@ function adlog() {
 
 
 
-// 获得用户信息  
+// 获得用户信息
 function getUserInfo() {
     return new Promise(resolve => {
         let body = `pin=${encodeURIComponent($.pin)}`
@@ -345,11 +345,11 @@ function getUid() {
                     console.log(`${$.name} API请求失败，请检查网路重试`)
                 } else {
                     data = JSON.parse(data);
-                        if (data.result) {                           
+                        if (data.result) {
                            if(data.data.openCardStatus !=3){
                            console.log("当前未开卡,无法助力和兑换奖励哦")
-                           }                           
-                            $.shareuuid = data.data.uid                            
+                           }
+                            $.shareuuid = data.data.uid
                             console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${$.shareuuid}\n`);
                         }
                       }
