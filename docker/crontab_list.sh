@@ -38,8 +38,6 @@
 20 0-23/3 * * * node /scripts/jd_jxmc.js >> /scripts/logs/jd_jxmc.log 2>&1
 #东东电竞经理
 47 10 * * * node /scripts/jd_djjl.js >> /scripts/logs/jd_djjl.log 2>&1
-#jd_618Opencard12
-30 6,23 * * * node /scripts/jd_618Opencard12.js >> /scripts/logs/jd_618Opencard12.log 2>&1
 #星系牧场
 03 */2 * * * node /scripts/jd_qqxing.js >> /scripts/logs/jd_qqxing.log 2>&1
 #欧洲杯
