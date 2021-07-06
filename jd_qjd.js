@@ -72,7 +72,7 @@ const JD_API_HOST = `https://api.m.jd.com/`;
       }
 
       //助力前十个
-      if (i < 10) {
+      if (i < 20) {
         await getcode();
         await $.wait(1000);
       } else {
@@ -111,8 +111,10 @@ const JD_API_HOST = `https://api.m.jd.com/`;
         console.log("内部助力ing...")
         for (let index = 0; index < 29; index++) {
           console.log("开始助力第" + (index + 1) + "个助力码：", JSON.stringify(helpArr[index]));
-          await help(helpArr[index].groupCodeID, helpArr[index].shareCode)
-          await $.wait(1000);
+          if (helpArr[index]) {
+            await help(helpArr[index].groupCodeID, helpArr[index].shareCode)
+            await $.wait(1000);
+          }
         }
       } else {
         console.log("没获取到助力码,停止运行")
