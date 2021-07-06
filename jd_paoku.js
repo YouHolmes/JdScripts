@@ -3,6 +3,11 @@
 
 后续添加自动兑换功能 如入会失败 自行去入会
 入口 京东 频道 美食馆
+零食街自动兑换变量
+export lsjdh="jdAward1" ##兑换5豆
+export lsjdh="jdAward2" ##兑换10豆
+export lsjdh="jdAward3" ##兑换100豆
+export lsjdh="jdAward4" ##兑换牛奶
 [task_local]
 0 11 * * *
 */
@@ -15,6 +20,10 @@ let useInfo = {};
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
 let newShareCodes = [];
+let lsjdh = '';
+if (process.env.lsjdh) {
+  lsjdh = process.env.lsjdh;
+}
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
@@ -65,71 +74,74 @@ if ($.isNode()) {
       console.log(`${$.UserName}去助力${newShareCodes[j].usr}`)
       nick = useInfo[$.UserName];
       await dohelp(newShareCodes[j].code);
-      await $.wait(5000)
+      await $.wait(3000)
     }
   }
 
 
 
 })()
-  .catch((e) => {
-    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-  })
-  .finally(() => {
-    $.done();
-  })
+    .catch((e) => {
+      $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+    })
+    .finally(() => {
+      $.done();
+    })
 async function star() {
-await gettoken()
-$.log("开始入会任务")
-await dojoinMember(1000101562)
-await $.wait(5000)
-await dojoinMember(1000077335)
-await $.wait(5000)
-await dojoinMember(1000008814)
-await $.wait(5000)
-await dojoinMember(1000014803)
-$.log("开始领取首页水滴")
-await dotree(1)
-await $.wait(5000)
-await dotree(2)
-await $.wait(5000)
-await dotree(3)
-await $.wait(5000)
-$.log("开始浏览会场")
-await doliulan(1)
-await $.wait(5000)
-await doliulan(2)
-await $.wait(5000)
-await doliulan(3)
-//await gettask()  
+  await gettoken()
+  $.log("开始入会任务")
+  await dojoinMember(1000101562)
+  await $.wait(3000)
+  await dojoinMember(1000077335)
+  await $.wait(3000)
+  await dojoinMember(1000008814)
+  await $.wait(3000)
+  await dojoinMember(1000014803)
+  $.log("开始领取首页水滴")
+  await dotree(1)
+  await $.wait(3000)
+  await dotree(2)
+  await $.wait(3000)
+  await dotree(3)
+  await $.wait(3000)
+  $.log("开始浏览会场")
+  await doliulan(1)
+  await $.wait(3000)
+  await doliulan(2)
+  await $.wait(3000)
+  await doliulan(3)
+//await gettask()
 
-$.log("开始浏览会场")
-await doshop(10299171)
-await $.wait(5000)
-await doshop(1000077335)
-await $.wait(5000)
-await doshop(1000008814)
-await $.wait(5000)
-await doshop(1000014803)
-$.log("开始浏览推荐食品商品")
-await doGoods(1)
-await $.wait(5000)
-await doGoods(2)
-await $.wait(5000)
-await doGoods(3)
-await $.wait(5000)
-await doGoods(4)
-$.log("开始加购商品")
-await doadd(1)
-await $.wait(5000)
-await doadd(2)
-await $.wait(5000)
-await doadd(3)
-await $.wait(5000)
-await doadd(4)
-$.log("开始游戏刷分")
-await playgame()
-
+  $.log("开始浏览会场")
+  await doshop(1000014803)
+  await $.wait(3000)
+  await doshop(10299171)
+  await $.wait(3000)
+  await doshop(1000077335)
+  await $.wait(3000)
+  await doshop(1000008814)
+  await $.wait(3000)
+  await doshop(1000101562)
+  $.log("开始浏览推荐食品商品")
+  await doGoods(1)
+  await $.wait(3000)
+  await doGoods(2)
+  await $.wait(3000)
+  await doGoods(3)
+  await $.wait(3000)
+  await doGoods(4)
+  $.log("开始加购商品")
+  await doadd(1)
+  await $.wait(3000)
+  await doadd(2)
+  await $.wait(3000)
+  await doadd(3)
+  await $.wait(3000)
+  await doadd(4)
+  $.log("开始游戏刷分")
+  await playgame()
+  $.log("开始兑换")
+  await duihuan()
 }
 
 function gettoken() {
@@ -202,38 +214,38 @@ function getnick() {
   });
 }
 function doshop(goodsNumId) {
-    return new Promise(async (resolve) => {
-let options = {
-    url: `https://jinggengjcq-isv.isvjcloud.com/dm/front/foodRunning/complete/mission?open_id=&mix_nick=&bizExtString=&user_id=10299171`,
+  return new Promise(async (resolve) => {
+    let options = {
+      url: `https://jinggengjcq-isv.isvjcloud.com/dm/front/foodRunning/complete/mission?open_id=&mix_nick=&bizExtString=&user_id=10299171`,
 
-    body: `{"jsonRpc":"2.0","params":{"commonParameter":{"appkey":"51B59BB805903DA4CE513D29EC448375","m":"POST","sign":"c80a9253cc1558cbf7f54639198ee751","timestamp":1625029740517,"userId":10299171},"admJson":{"goodsNumId":${goodsNumId},"missionType":"viewShop","method":"/foodRunning/complete/mission","actId":"jd_food_running","buyerNick":"${nick}","pushWay":1,"userId":10299171}}}`,
-headers: {
-"Origin": "https://jinggengjcq-isv.isvjcloud.com",
-"Content-Type": "application/json; charset=UTF-8",
-"X-Requested-With": "XMLHttpRequest",
-"Host": "jinggengjcq-isv.isvjcloud.com",
-"Referer": "https://jinggengjcq-isv.isvjcloud.com/paoku/index.html?sid=75b413510cb227103e928769818a74ew&un_area=4_48201_54794_0",
-"User-Agent": "jdapp;iPhone;9.5.2;14.3;6898c30638c55142969304c8e2167997fa59eb53;network/4g;ADID/F108E1B6-8E30-477C-BE54-87CF23435488;supportApplePay/0;hasUPPay/0;hasOCPay/0;model/iPhone9,2;addressid/390536540;supportBestPay/0;appBuild/167650;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
-}}
- $.post(options, async (err, resp, data) => {
-            try {
+      body: `{"jsonRpc":"2.0","params":{"commonParameter":{"appkey":"51B59BB805903DA4CE513D29EC448375","m":"POST","sign":"c80a9253cc1558cbf7f54639198ee751","timestamp":1625029740517,"userId":10299171},"admJson":{"goodsNumId":${goodsNumId},"missionType":"viewShop","method":"/foodRunning/complete/mission","actId":"jd_food_running","buyerNick":"${nick}","pushWay":1,"userId":10299171}}}`,
+      headers: {
+        "Origin": "https://jinggengjcq-isv.isvjcloud.com",
+        "Content-Type": "application/json; charset=UTF-8",
+        "X-Requested-With": "XMLHttpRequest",
+        "Host": "jinggengjcq-isv.isvjcloud.com",
+        "Referer": "https://jinggengjcq-isv.isvjcloud.com/paoku/index.html?sid=75b413510cb227103e928769818a74ew&un_area=4_48201_54794_0",
+        "User-Agent": "jdapp;iPhone;9.5.2;14.3;6898c30638c55142969304c8e2167997fa59eb53;network/4g;ADID/F108E1B6-8E30-477C-BE54-87CF23435488;supportApplePay/0;hasUPPay/0;hasOCPay/0;model/iPhone9,2;addressid/390536540;supportBestPay/0;appBuild/167650;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
+      }}
+    $.post(options, async (err, resp, data) => {
+      try {
 
-                    const reust = JSON.parse(data)
-                 
-                    if(reust.errorCode == 200){
-                   
-                    $.log(`${reust.data.data.remark}\n获得${reust.data.data.sendNum}`)
-                    }else if(reust.errorCode == 500) {
-                    
-                        $.log("今日已领取完毕,请明日再来！"+reust.errorMessage)
-                    }
-            } catch (e) {
-                $.logErr(e, resp);
-            } finally {
-                resolve();
-            }
-        });
+        const reust = JSON.parse(data)
+
+        if(reust.errorCode == 200){
+
+          $.log(`${reust.data.data.remark}\n获得${reust.data.data.sendNum}`)
+        }else if(reust.errorCode == 500) {
+
+          $.log("今日已领取完毕,请明日再来！"+reust.errorMessage)
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve();
+      }
     });
+  });
 }
 function doliulan(goodsNumId) {
   return new Promise(async (resolve) => {
@@ -447,7 +459,7 @@ function playgame() {
     let options = {
       url: `https://jinggengjcq-isv.isvjcloud.com/dm/front/foodRunning/SendCoin?open_id=&mix_nick=&bizExtString=&user_id=10299171`,
 
-      body: `{"jsonRpc":"2.0","params":{"commonParameter":{"appkey":"51B59BB805903DA4CE513D29EC448375","m":"POST","sign":"3a4b12fe8d85b42c2f5defb8d642f043","timestamp":1625035211650,"userId":10299171},"admJson":{"coin":10000,"point":10000,"method":"/foodRunning/SendCoin","actId":"jd_food_running","buyerNick":"${nick}","pushWay":1,"userId":10299171}}}`,
+      body: `{"jsonRpc":"2.0","params":{"commonParameter":{"appkey":"51B59BB805903DA4CE513D29EC448375","m":"POST","sign":"3a4b12fe8d85b42c2f5defb8d642f043","timestamp":1625035211650,"userId":10299171},"admJson":{"coin":5000,"point":5000,"method":"/foodRunning/SendCoin","actId":"jd_food_running","buyerNick":"${nick}","pushWay":1,"userId":10299171}}}`,
       headers: {
         "Origin": "https://jinggengjcq-isv.isvjcloud.com",
         "Content-Type": "application/json; charset=UTF-8",
@@ -465,9 +477,9 @@ function playgame() {
           if(reust.data.data.enoughCoin == true){
             $.log(`刷分成功 刷金币成功${reust.data.data.point} 正在前往领取京豆`)
             await ljd("jdRunningBox1")
-            await $.wait(5000)
+            await $.wait(3000)
             await ljd("jdRunningBox2")
-            await $.wait(5000)
+            await $.wait(3000)
             await ljd("jdRunningBox3")
           }else if(reust.data.data.enoughCoin == false){
             $.log(`${reust.data.data.msg}`)
@@ -529,7 +541,40 @@ function showMsg() {
     resolve()
   })
 }
+function duihuan() {
+  return new Promise(async (resolve) => {
+    let options = {
+      url: `https://jinggengjcq-isv.isvjcloud.com/dm/front/foodRunning/exchangeGoods?open_id=&mix_nick=&bizExtString=&user_id=10299171`,
 
+      body: `{"jsonRpc":"2.0","params":{"commonParameter":{"appkey":"51B59BB805903DA4CE513D29EC448375","m":"POST","sign":"8bf72ff9ded8cc22cd9ec407165342e7","timestamp":1625093423768,"userId":10299171},"admJson":{"awardId":"${lsjdh}","method":"/foodRunning/exchangeGoods","actId":"jd_food_running","buyerNick":"${nick}","pushWay":1,"userId":10299171}}}`,
+      headers: {
+        "Origin": "https://jinggengjcq-isv.isvjcloud.com",
+        "Content-Type": "application/json; charset=UTF-8",
+        "X-Requested-With": "XMLHttpRequest",
+        "Host": "jinggengjcq-isv.isvjcloud.com",
+        "Referer": "https://jinggengjcq-isv.isvjcloud.com/paoku/index.html?lng=106.286832&lat=29.969274&sid=1c98c3013bd5808a5977e0f9d5f5272w&un_area=17_1458_1463_43894",
+        "User-Agent": "jdapp;iPhone;9.5.2;14.3;6898c30638c55142969304c8e2167997fa59eb53;network/4g;ADID/F108E1B6-8E30-477C-BE54-87CF23435488;supportApplePay/0;hasUPPay/0;hasOCPay/0;model/iPhone9,2;addressid/390536540;supportBestPay/0;appBuild/167650;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
+      }}
+    $.post(options, async (err, resp, data) => {
+      try {
+
+        const reust = JSON.parse(data)
+
+        if(reust.errorCode == 200){
+
+          $.log(`${reust.data.data.msg}`)
+        }else if(reust.errorCode == 500) {
+
+          $.log("今日已领取完毕,请明日再来！"+reust.errorMessage)
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve();
+      }
+    });
+  });
+}
 
 async function TotalBean() {
   return new Promise(async resolve => {

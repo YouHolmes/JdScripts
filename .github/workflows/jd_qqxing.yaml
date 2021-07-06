@@ -6,7 +6,7 @@ name: jd_qqxing-星系牧场
 on:
     workflow_dispatch:
     schedule:
-        - cron: "03 */2 * * *"
+        - cron: "03 */8 * * *"
     watch:
         types: [started]
     repository_dispatch:
