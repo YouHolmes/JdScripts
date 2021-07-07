@@ -1,5 +1,5 @@
 # 每3天的23:50分清理一次日志
-50 23 */3 * * rm -rf /scripts/logs/*.log
+50 23 */1 * * rm -rf /scripts/logs/*.log
 
 ##############短期活动##############
 #极速版红包
@@ -140,7 +140,7 @@
 #chb
 #5 6-18/6 * * * node /scripts/jd_wsdlb.js >> /scripts/logs/jd_wsdlb.log 2>&1
 #极速版 百元生活费 赚金币
-0 5,8 * * * node /scripts/jd_zjb.js >> /scripts/logs/jd_zjb.log 2>&1
+#0 5,8 * * * node /scripts/jd_zjb.js >> /scripts/logs/jd_zjb.log 2>&1
 
 ##############默认注释活动##############
 # 京东试用（默认注释，请配合取关脚本使用）
