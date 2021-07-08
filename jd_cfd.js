@@ -101,14 +101,14 @@ $.appId = 10009;
             if (!$.canHelp) break
             await $.wait(1000 * 10)
         }
-        if (!$.canHelp) continue
+        /*if (!$.canHelp) continue
         console.log(`\n\n寻宝大作战，助力作者\n`);
         for (let id of $.strGroupIds) {
             console.log(`账号${$.UserName} 去参加寻宝大作战 ${id} 等待10秒`)
             await joinGroup(id)
             if (!$.canHelp) break
             await $.wait(1000 * 10)
-        }
+        }*/
     }
     await showMsg();
 })()
@@ -1185,12 +1185,15 @@ function shareCodesFormat() {
             '7036EA8A2B76B66F82AC9BD8EC21C70E51B13BE17B0F668CEBAD7B44EAE5F7A6',
             '105E89A2CF8E98F55938E167EDB6397FFA4039B6EA6B279B9BA2B72C01D6C1C8',
             '2DAB117CAA29E84E441C6C9964DF045AEC9371C541E9A98465509FB9DA22C95F',
-            '241B558D14962F5CD91745467609DC0F790A1645EC11CBC21567BC0C83A9D5FF',
+            /*'241B558D14962F5CD91745467609DC0F790A1645EC11CBC21567BC0C83A9D5FF',
             'C2E1E45FF0C991663F001A7073D742F16D7EFD3C7B556306DE646BF6EE5B8840',
             'AC99267ED3B2C1E278996A379109B869F54022FB99E3A963DAE919A61DB6A227',
             '7056FA7720A81428A2B4D6AC80FC5B66A1E05084A31E1A4C7A77B4376359371D',
+
             '08AF8E6CD27A50B52E2A397FC69B39485EDFFEA1D75830BBC71FE0C7AC1392BF',
             '679EE19A19A8741FE1B5B6B1201AFDBC280BEB4FBCDADB13611BD75296A7FB9E',
+            'AB8E69F2216A14AB49090674841C1849101F8F1F26AEDEA22349BFDFECF459C2',*/
+
         ];
         if ($.shareCodesArr[$.index - 1]) {
             $.newShareCodes = $.shareCodesArr[$.index - 1].split('@');
