@@ -14,6 +14,8 @@
 33 10,14,18 * * * node /scripts/jd_ddopk.js >> /scripts/logs/jd_ddopk.log 2>&1
 #汪汪乐园
 30 2,5,20 * * * node /scripts/jd_joy_park_task.js >> /scripts/logs/jd_joy_park_task.log 2>&1
+#新签到
+10 0,18 * * * node /scripts/jd_NewSign.js >> /scripts/logs/jd_NewSign.log 2>&1
 
 ##############长期活动##############
 # 签到

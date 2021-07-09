@@ -2,8 +2,8 @@
 星系牧场
 活动入口：QQ星儿童牛奶京东自营旗舰店->星系牧场
 每次都要手动打开才能跑 不知道啥问题
-号1默认给wuzhi助力,后续接龙 2给1 3给2
-https://lzdz-isv.isvjcloud.com/dingzhi/qqxing/pasture/activity?activityId=90121061401
+号1默认给我助力,后续接龙 2给1 3给2
+https://lzdz-isv.isvjcloud.com/dingzhi/qqxing/pasture/activity?activityId=90121061401&lng=107.146935&lat=33.255252&sid=cad74d1c843bd47422ae20cadf6fe5aw&un_area=8_573_6627_52446
 更新地址：https://raw.githubusercontent.com/Wenmoux/scripts/wen/jd/jd_ddnc_farmpark.js
 ============Quantumultx===============
 [task_local]
@@ -33,90 +33,90 @@ if ($.isNode()) {
 const JD_API_HOST = `https://api.m.jd.com/client.action`;
 message = ""
 $.shareuuid = "b7b38d35069342ce8acab8f56d8d9448"
-    !(async () => {
-        if (!cookiesArr[0]) {
-            $.msg($.name, '【提示】请先获取cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/', {
-                "open-url": "https://bean.m.jd.com/"
-            });
-            return;
-        }
-        for (let i = 0; i <cookiesArr.length; i++) {
-            cookie = cookiesArr[i];
-            if (cookie) {
-                $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
-                $.index = i + 1;
-                $.cando = true
-                $.cow = ""
-                $.openCard = true
-                $.isLogin = true;
-                $.needhelp = true
-                $.foodNum = 0
-                $.nickName = '';
-                $.drawresult = ""
-                $.exchange =0
-                console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
-                if (!$.isLogin) {
-                    $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
-                        "open-url": "https://bean.m.jd.com/bean/signIndex.action"
-                    });
-                    if ($.isNode()) {
-                        await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
-                    }
-                    continue
+!(async () => {
+    if (!cookiesArr[0]) {
+        $.msg($.name, '【提示】请先获取cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/', {
+            "open-url": "https://bean.m.jd.com/"
+        });
+        return;
+    }
+    for (let i = 0; i <cookiesArr.length; i++) {
+        cookie = cookiesArr[i];
+        if (cookie) {
+            $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
+            $.index = i + 1;
+            $.cando = true
+            $.cow = ""
+            $.openCard = true
+            $.isLogin = true;
+            $.needhelp = true
+            $.foodNum = 0
+            $.nickName = '';
+            $.drawresult = ""
+            $.exchange =0
+            console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
+            if (!$.isLogin) {
+                $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
+                    "open-url": "https://bean.m.jd.com/bean/signIndex.action"
+                });
+                if ($.isNode()) {
+                    await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
                 }
-                await genToken()
-                await getActCk()
-                await getToken2()
-                await getshopid()
-                await getMyPin()
-                await adlog()
-                await getUserInfo()
-                if ($.cando) {
-                    await getUid($.shareuuid)
-                    await getinfo()
-                    taskList = [...$.taskList, ...$.taskList2]
-                    for (j = 0; j < taskList.length; j++) {
-                        task = taskList[j]
-                        console.log(task.taskname)
-                        if (task.taskid == "interact") {
-                            for (l = 0; l < 20 - task.curNum; l++) {
-                                await dotask(task.taskid, task.params)
-                                await $.wait(500)
-                            }
-                        } else if (task.taskid == "scansku") {
-                            await getproduct()
-                            await writePersonInfo($.vid)
-                            await dotask(task.taskid, $.pparam)
-                        } else {
+                continue
+            }
+            await genToken()
+            await getActCk()
+            await getToken2()
+            await getshopid()
+            await getMyPin()
+            await adlog()
+            await getUserInfo()
+            if ($.cando) {
+                await getUid($.shareuuid)
+                await getinfo()
+                taskList = [...$.taskList, ...$.taskList2]
+                for (j = 0; j < taskList.length; j++) {
+                    task = taskList[j]
+                    console.log(task.taskname)
+                    if (task.taskid == "interact") {
+                        for (l = 0; l < 20 - task.curNum; l++) {
                             await dotask(task.taskid, task.params)
                             await $.wait(500)
                         }
+                    } else if (task.taskid == "scansku") {
+                        await getproduct()
+                        await writePersonInfo($.vid)
+                        await dotask(task.taskid, $.pparam)
+                    } else {
+                        await dotask(task.taskid, task.params)
+                        await $.wait(500)
                     }
-                    await getinfo()
-                    for (k = 0; k < $.drawchance; k++) {
-                        await draw()
-                    }
-                    let exchanges =Math.floor($.foodNum/1000)
-                    console.log(`可兑换 ${exchanges} 次 20京🐶`)
-                    for(q = 0;q<exchanges && Exchange;q++){
-                    await exchange(13)
-                    }
-                    await getinfo()
-                    if(!Exchange){console.log("你 默认 不兑换东西,请自行进去活动兑换")}
-                    message += `【京东账号${$.index}】${$.nickName || $.UserName}\n${$.cow} 兑换京🐶 ${$.exchange}  ${$.drawresult}\n`
-                } else {
-                  $.msg($.name, "", "跑不起来了~请自己进去一次牧场")
                 }
+                await getinfo()
+                for (k = 0; k < $.drawchance; k++) {
+                    await draw()
+                }
+                let exchanges =Math.floor($.foodNum/1000)
+                console.log(`可兑换 ${exchanges} 次 20京🐶`)
+                for(q = 0;q<exchanges && Exchange;q++){
+                    await exchange(13)
+                }
+                await getinfo()
+                if(!Exchange){console.log("你 默认 不兑换东西,请自行进去活动兑换")}
+                message += `【京东账号${$.index}】${$.nickName || $.UserName}\n${$.cow} 兑换京🐶 ${$.exchange}  ${$.drawresult}\n`
+            } else {
+                $.msg($.name, "", "跑不起来了~请自己进去一次牧场")
             }
         }
-        if (message.length != 0&&new Date().getHours() == 11) {
+    }
+    if (message.length != 0&&new Date().getHours() == 11) {
         if ($.isNode()) {
-           await notify.sendNotify("星系牧场", `${message}\n牧场入口：QQ星儿童牛奶京东自营旗舰店->星系牧场\n\n吹水群：https://t.me/wenmouxx`);
-   }  else {
+            await notify.sendNotify("星系牧场", `${message}\n牧场入口：QQ星儿童牛奶京东自营旗舰店->星系牧场\n\n吹水群：https://t.me/wenmouxx`);
+        }  else {
             $.msg($.name, "", '星系牧场' + message)
         }
-           }
-    })()
+    }
+})()
     .catch((e) => $.logErr(e))
     .finally(() => $.done())
 //获取活动信息
@@ -262,8 +262,10 @@ function getMyPin() {
                         $.pin = data.data.secretPin
                         //    console.log($.pin)
                         $.nickname = data.data.nickname
+                        $.lz_jdpin_token = resp['headers']['set-cookie'].filter(row => row.indexOf("lz_jdpin_token") !== -1)[0]
                         // console.log(data)
                         console.log(`欢迎回来~  ${$.nickname}`);
+                        console.log("lz_jdpin_token=" +$.lz_jdpin_token)
                     }
                 }
             } catch (e) {
@@ -345,14 +347,14 @@ function getUid() {
                     console.log(`${$.name} API请求失败，请检查网路重试`)
                 } else {
                     data = JSON.parse(data);
-                        if (data.result) {
-                           if(data.data.openCardStatus !=3){
-                           console.log("当前未开卡,无法助力和兑换奖励哦")
-                           }
-                            $.shareuuid = data.data.uid
-                            console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${$.shareuuid}\n`);
+                    if (data.result) {
+                        if(data.data.openCardStatus !=3){
+                            console.log("当前未开卡,无法助力和兑换奖励哦")
                         }
-                      }
+                        $.shareuuid = data.data.uid
+                        console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${$.shareuuid}\n`);
+                    }
+                }
             } catch (e) {
                 $.logErr(e, resp)
             } finally {
@@ -467,13 +469,13 @@ function exchange(id) {
                     console.log(`${$.name} API请求失败，请检查网路重试`)
                 } else {
                     data = JSON.parse(data);
-                 //   console.log()
-if(data.result){
-console.log(`兑换 ${data.data.rewardName}成功`)
-$.exchange += 20
-}else{
-console.log(JSON.stringify(data))
-}
+                    //   console.log()
+                    if(data.result){
+                        console.log(`兑换 ${data.data.rewardName}成功`)
+                        $.exchange += 20
+                    }else{
+                        console.log(JSON.stringify(data))
+                    }
                 }
             } catch (e) {
                 $.logErr(e, resp)
@@ -573,7 +575,7 @@ function taskPostUrl(url, body) {
             'Referer': 'https://lzdz-isv.isvjcloud.com/dingzhi/qqxing/pasture/activity/6318274?activityId=90121061401&shareUuid=15739046ca684e8c8fd303c8a14e889a&adsource=null&shareuserid4minipg=Ej42XlmwUZpSlF8TzjHBW2Sy3WQlSnqzfk0%2FaZMj9YjTmBx5mleHyWG1kOiKkz%2Fk&shopid=undefined&lng=107.146945&lat=33.255267&sid=cad74d1c843bd47422ae20cadf6fe5aw&un_area=8_573_6627_52446',
             'user-agent': 'jdapp;android;10.0.4;11;2393039353533623-7383235613364343;network/wifi;model/Redmi K30;addressid/138549750;aid/290955c2782e1c44;oaid/b30cf82cacfa8972;osVer/30;appBuild/88641;partner/xiaomi001;eufv/1;jdSupportDarkMode/0;Mozilla/5.0 (Linux; Android 11; Redmi K30 Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045537 Mobile Safari/537.36',
             'content-type': 'application/x-www-form-urlencoded',
-            'Cookie': `${cookie} IsvToken=${$.IsvToken};AUTH_C_USER=${$.pin};`,
+            'Cookie': `${cookie} IsvToken=${$.IsvToken};AUTH_C_USER=${$.pin};${$.lz_jdpin_token}`,
         }
     }
 }
