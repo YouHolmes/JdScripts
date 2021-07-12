@@ -14,7 +14,22 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 //惊喜APP的UA。领取助力任务奖励需要惊喜APP的UA,环境变量：JX_USER_AGENT，有能力的可以填上自己的UA
 const JXUserAgent =  $.isNode() ? (process.env.JX_USER_AGENT ? process.env.JX_USER_AGENT : ``):``;
-$.inviteCodeList = [];
+$.inviteCodeList = [
+    'wVMW-xbLJ5igeuUvrUXoJLXvsoti8HCABZPIJ813miF1Ffe2U484vy5GrKcjlRVW',
+    'wVMW-xbLJ5igeuUvrUXoJESNHATXT18BkM7jh1zOOGnTymePRHvaTQETgWh_Waw2',
+    'wVMW-xbLJ5igeuUvrUXoJJyeOjBWGMkn3gpx-BKaaPA_J9xStzTjB9yffTgLwSnU',
+    'wVMW-xbLJ5igeuUvrUXoJMP3AC6fonLo29SgRHl5C80Q1OTeMGtW2bMVYbLv98go',
+    'wVMW-xbLJ5igeuUvrUXoJAFlD8pJ4oooqgV-fG_uNUWXoqoGz2N52v3MSySXgCke',
+    'wVMW-xbLJ5igeuUvrUXoJGBGHc3UrSHsxD_nLl_miVI',
+    'wVMW-xbLJ5igeuUvrUXoJINEuQoIDssAsctAum3rRmQHy5xJoh7NvfV6x6KSL7dt',
+    'wVMW-xbLJ5igeuUvrUXoJBKYDZSU2vS9exAJ4Wc524l1Ffe2U484vy5GrKcjlRVW',
+    'wVMW-xbLJ5igeuUvrUXoJFyLXlL86WiHBTJvW0Ngeoc',
+    'wVMW-xbLJ5igeuUvrUXoJHsZ68Fif_8Nb_PzfTkxqhWFxi6BGQHznYYNi269OW61',
+    'wVMW-xbLJ5igeuUvrUXoJAJsjJekq_ER_DVLDaQQSqM',
+    'wVMW-xbLJ5igeuUvrUXoJMNlTgxW2gq6B981Lzm4p80',
+    'wVMW-xbLJ5igeuUvrUXoJO3tRlQxV4RS1rxXmddzy1FtfG2UnaZjSNm0gR2CSLuQ',
+    'wVMW-xbLJ5igeuUvrUXoJHzX7yCmFyXgCq-hKuCUt-cc-bmgUMDCqkfCPfba7C04'
+];
 let cookiesArr = [];
 $.appId = 10028;
 $.helpCkList = [];
@@ -221,7 +236,7 @@ async function pasture() {
           $.pause = false;
           console.log(`开始第${k + 1}次喂白菜`);
           await takeGetRequest('feed');
-          await $.wait(2000);
+          await $.wait(4000);
           if ($.pause) {
             await takeGetRequest('GetHomePageInfo');
             await $.wait(1000);
