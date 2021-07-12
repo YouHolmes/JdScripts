@@ -1,205 +1,373 @@
-"use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+/*
+ENV
+JOYPARK_JOY_START =      只做前几个CK
+JOY_COIN_MAXIMIZE =      最大化硬币收益，如果合成后全部挖土后还有空位，则开启此模式（默认关闭） 0关闭 1开启
+请确保新用户助力过开工位，否则开启游戏了就不算新用户，后面就不能助力开工位了！！！！！！！！！！
+更新地址：https://github.com/Tsukasa007/my_script
+============Quantumultx===============
+[task_local]
+#汪汪乐园养joy
+20 0-23/3 * * * jd_joypark_joy.js, tag=汪汪乐园养joy, img-url=https://raw.githubusercontent.com/tsukasa007/icon/master/jd_joypark_joy.png, enabled=true
+================Loon==============
+[Script]
+cron "20 0-23/3 * * *" script-path=jd_joypark_joy.js,tag=汪汪乐园养joy
+===============Surge=================
+汪汪乐园养joy = type=cron,cronexp="20 0-23/3 * * *",wake-system=1,timeout=3600,script-path=jd_joypark_joy.js
+============小火箭=========
+汪汪乐园养joy = type=cron,script-path=jd_joypark_joy.js, cronexpr="20 0-23/3 * * *", timeout=3600, enable=true
+*/
+const $ = new Env('汪汪乐园养joy');
+const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+
+const notify = $.isNode() ? require('./sendNotify') : '';
+//IOS等用户直接用NobyDa的jd cookie
+let cookiesArr = [],
+    cookie = '';
+if ($.isNode()) {
+  Object.keys(jdCookieNode).forEach((item) => {
+    cookiesArr.push(jdCookieNode[item])
+  })
+  if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
+} else {
+  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
+}
+
+//最大化硬币收益模式
+$.JOY_COIN_MAXIMIZE = '0'
+$.log(`最大化收益模式: 已${$.JOY_COIN_MAXIMIZE ? `默认已开启` : `关闭`}  `)
+
+const JD_API_HOST = `https://api.m.jd.com/client.action`;
+message = ""
+!(async () => {
+  $.user_agent = require('./USER_AGENTS').USER_AGENT
+  if (!cookiesArr[0]) {
+    $.msg($.name, '【提示】请先获取cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/', {
+      "open-url": "https://bean.m.jd.com/"
     });
-};
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    return;
+  }
+  for (let i = 0; i < cookiesArr.length; i++) {
+    //$.wait(50)
+    //if (process.env.JOYPARK_JOY_START && i == process.env.JOYPARK_JOY_START){
+    //  console.log(`\n汪汪乐园养joy 只运行 ${process.env.JOYPARK_JOY_START} 个Cookie\n`);
+    //  break
+    //}
+
+    cookie = cookiesArr[i];
+    if (cookie) {
+      $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
+      $.index = i + 1;
+      $.isLogin = true;
+      $.nickName = '';
+      $.maxJoyCount = 10
+      console.log(`\n\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
+
+      //下地后还有有钱买Joy并且买了Joy
+      $.hasJoyCoin = true
+      await getJoyBaseInfo(undefined,undefined,undefined,true);
+      $.activityJoyList = []
+      $.workJoyInfoList = []
+      await getJoyList(true);
+      await getGameShopList()
+      //清理工位
+      await doJoyMoveDownAll($.workJoyInfoList)
+      //从低合到高
+      await doJoyMergeAll($.activityJoyList)
+      await getJoyList(true)
     }
-};
-exports.__esModule = true;
-var axios_1 = require("axios");
-var TS_USER_AGENTS_1 = require("./JS_USER_AGENTS");
-var $ = {};
-var cookie = '', cookiesArr = [], res = '';
-!(function () { return __awaiter(void 0, void 0, void 0, function () {
-    var i, taskVos, tasks, _i, tasks_1, t, arr, _a, arr_1, name, times, apTaskDetail, taskResult, awardRes, i_1;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0: return [4 /*yield*/, requireConfig()];
-            case 1:
-                _b.sent();
-                i = 0;
-                _b.label = 2;
-            case 2:
-                if (!(i < cookiesArr.length)) return [3 /*break*/, 18];
-                cookie = cookiesArr[i];
-                $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^;]*)/)[1]);
-                $.index = i + 1;
-                $.isLogin = true;
-                $.nickName = '';
-                return [4 /*yield*/, TotalBean()];
-            case 3:
-                _b.sent();
-                console.log("\n\u5F00\u59CB\u3010\u4EAC\u4E1C\u8D26\u53F7" + $.index + "\u3011" + ($.nickName || $.UserName) + "\n");
-                return [4 /*yield*/, api('apTaskList', { "linkId": "LsQNxL7iWDlXUs6cFl-AAg" })];
-            case 4:
-                taskVos = _b.sent();
-                tasks = taskVos.data;
-                _i = 0, tasks_1 = tasks;
-                _b.label = 5;
-            case 5:
-                if (!(_i < tasks_1.length)) return [3 /*break*/, 17];
-                t = tasks_1[_i];
-                if (!(t.taskTitle === '汪汪乐园签到')) return [3 /*break*/, 6];
-                return [3 /*break*/, 16];
-            case 6:
-                if (!(t.taskTitle === '汪汪乐园浏览会场' || t.taskTitle === '汪汪乐园浏览商品')) return [3 /*break*/, 16];
-                arr = ['汪汪乐园浏览会场', '汪汪乐园浏览商品'];
-                _a = 0, arr_1 = arr;
-                _b.label = 7;
-            case 7:
-                if (!(_a < arr_1.length)) return [3 /*break*/, 16];
-                name = arr_1[_a];
-                times = name === '汪汪乐园浏览会场' ? 5 : 10;
-                return [4 /*yield*/, api('apTaskDetail', { "taskType": t.taskType, "taskId": t.id, "channel": 4, "linkId": "LsQNxL7iWDlXUs6cFl-AAg" })];
-            case 8:
-                res = _b.sent();
-                apTaskDetail = void 0, taskResult = void 0, awardRes = void 0;
-                i_1 = 0;
-                _b.label = 9;
-            case 9:
-                if (!(i_1 < times)) return [3 /*break*/, 15];
-                apTaskDetail = res.data.taskItemList[i_1];
-                console.log(apTaskDetail);
-                return [4 /*yield*/, api('apDoTask', { "taskType": t.taskType, "taskId": t.id, "channel": 4, "linkId": "LsQNxL7iWDlXUs6cFl-AAg", "itemId": encodeURIComponent(apTaskDetail.itemId) })];
-            case 10:
-                taskResult = _b.sent();
-                console.log('doTask: ', JSON.stringify(taskResult));
-                if (taskResult.errMsg === '任务已完成')
-                    return [3 /*break*/, 15];
-                return [4 /*yield*/, wait(10000)];
-            case 11:
-                _b.sent();
-                return [4 /*yield*/, api('apTaskDrawAward', { "taskType": t.taskType, "taskId": t.id, "linkId": "LsQNxL7iWDlXUs6cFl-AAg" })];
-            case 12:
-                awardRes = _b.sent();
-                if (awardRes.success && awardRes.code === 0)
-                    console.log(awardRes.data[0].awardGivenNumber);
-                else
-                    console.log('领取奖励出错:', JSON.stringify(awardRes));
-                return [4 /*yield*/, wait(1000)];
-            case 13:
-                _b.sent();
-                _b.label = 14;
-            case 14:
-                i_1++;
-                return [3 /*break*/, 9];
-            case 15:
-                _a++;
-                return [3 /*break*/, 7];
-            case 16:
-                _i++;
-                return [3 /*break*/, 5];
-            case 17:
-                i++;
-                return [3 /*break*/, 2];
-            case 18: return [2 /*return*/];
+  }
+})()
+    .catch((e) => $.logErr(e))
+    .finally(() => $.done())
+
+
+function getJoyBaseInfo(taskId = '',inviteType = '',inviterPin = '',printLog = false) {
+  //await $.wait(20)
+  return new Promise(resolve => {
+    $.post(taskPostClientActionUrl(`body={"taskId":"${taskId}","inviteType":"${inviteType}","inviterPin":"${inviterPin}","linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&_t=1625480372020&appid=activities_platform`,`joyBaseInfo`), async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
+        } else {
+          data = JSON.parse(data);
+          if (printLog) {
+            $.log(`等级: ${data.data.level}|金币: ${data.data.joyCoin}`);
+          }
+          $.joyBaseInfo = data.data
         }
-    });
-}); })();
-function api(fn, body) {
-    var _this = this;
-    return new Promise(function (resolve) { return __awaiter(_this, void 0, void 0, function () {
-        var data;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, axios_1["default"].post("https://api.m.jd.com/", "functionId=" + fn + "&body=" + JSON.stringify(body) + "&_t=" + Date.now() + "&appid=activities_platform", {
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                            'User-Agent': TS_USER_AGENTS_1["default"],
-                            'Host': 'api.m.jd.com',
-                            'Referer': 'https://joypark.jd.com/',
-                            'Origin': 'https://joypark.jd.com',
-                            'Cookie': cookie
-                        }
-                    })];
-                case 1:
-                    data = (_a.sent()).data;
-                    resolve(data);
-                    return [2 /*return*/];
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve($.joyBaseInfo);
+      }
+    })
+  })
+}
+
+function getJoyList(printLog = false){
+  //await $.wait(20)
+  return new Promise(resolve => {
+    $.get(taskGetClientActionUrl(`appid=activities_platform&body={"linkId":"LsQNxL7iWDlXUs6cFl-AAg"}`,`joyList`), async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
+        } else {
+          data = JSON.parse(data);
+          if (printLog) {
+            $.log(`\n===== 【京东账号${$.index}】${$.nickName || $.UserName} joy 状态 start =====`)
+            $.log("在逛街的joy⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️")
+            for (let i = 0; i < data.data.activityJoyList.length; i++) {
+              //$.wait(50);
+              $.log(`id:${data.data.activityJoyList[i].id}|name: ${data.data.activityJoyList[i].name}|level: ${data.data.activityJoyList[i].level}`);
             }
-        });
-    }); });
-}
-function wait(t) {
-    return new Promise(function (e) { return setTimeout(e, t); });
-}
-function requireConfig() {
-    return new Promise(function (resolve) {
-        console.log('\n====================Hello World====================\n');
-        console.log('开始获取配置文件\n');
-        var jdCookieNode = require('./jdCookie.js');
-        Object.keys(jdCookieNode).forEach(function (item) {
-            if (jdCookieNode[item]) {
-                cookiesArr.push(jdCookieNode[item]);
+            $.log("\n在铲土的joy⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️")
+            for (let i = 0; i < data.data.workJoyInfoList.length; i++) {
+              //$.wait(50)
+              $.log(`工位: ${data.data.workJoyInfoList[i].location} [${data.data.workJoyInfoList[i].unlock ? `已开` : `未开`}]|joy= ${data.data.workJoyInfoList[i].joyDTO ? `id:${data.data.workJoyInfoList[i].joyDTO.id}|name: ${data.data.workJoyInfoList[i].joyDTO.name}|level: ${data.data.workJoyInfoList[i].joyDTO.level}` : `毛都没有`}`)
             }
-        });
-        console.log("\u5171" + cookiesArr.length + "\u4E2A\u4EAC\u4E1C\u8D26\u53F7\n");
-        resolve(0);
-    });
+            $.log(`===== 【京东账号${$.index}】${$.nickName || $.UserName} joy 状态  end  =====\n`)
+          }
+          $.activityJoyList = data.data.activityJoyList
+          $.workJoyInfoList = data.data.workJoyInfoList
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve(data.data);
+      }
+    })
+  })
 }
-function TotalBean() {
-    var _this = this;
-    return new Promise(function (resolve) { return __awaiter(_this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            axios_1["default"].get('https://me-api.jd.com/user_new/info/GetJDUserInfoUnion', {
-                headers: {
-                    Host: "me-api.jd.com",
-                    Connection: "keep-alive",
-                    Cookie: cookie,
-                    "User-Agent": TS_USER_AGENTS_1["default"],
-                    "Accept-Language": "zh-cn",
-                    "Referer": "https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&",
-                    "Accept-Encoding": "gzip, deflate, br"
-                }
-            }).then(function (res) {
-                if (res.data) {
-                    var data = res.data;
-                    if (data['retcode'] === "1001") {
-                        $.isLogin = false; //cookie过期
-                        return;
-                    }
-                    if (data['retcode'] === "0" && data['data'] && data.data.hasOwnProperty("userInfo")) {
-                        $.nickName = data.data.userInfo.baseInfo.nickname;
-                    }
-                }
-                else {
-                    console.log('京东服务器返回空数据');
-                }
-            })["catch"](function (e) {
-                console.log('Error:', e);
-            });
-            resolve();
-            return [2 /*return*/];
-        });
-    }); });
+
+function getGameShopList(){
+  //await $.wait(20)
+  return new Promise(resolve => {
+    $.get(taskGetClientActionUrl(`appid=activities_platform&body={"linkId":"LsQNxL7iWDlXUs6cFl-AAg"}`,`gameShopList`), async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
+        } else {
+          //排除不能购买的
+          data = JSON.parse(data).data.filter(row => row.shopStatus === 1);
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve(data);
+      }
+    })
+  })
 }
+
+async function doJoyMoveUpAll(activityJoyList, workJoyInfoList) {
+  let workJoyInfoUnlockList = workJoyInfoList.filter(row => row.unlock && row.joyDTO === null)
+  if (activityJoyList.length !== 0 && workJoyInfoUnlockList.length !== 0) {
+    let maxLevelJoy = Math.max.apply(Math, activityJoyList.map(function (o) {
+      return o.level
+    }))
+    let maxLevelJoyList = activityJoyList.filter(row => row.level === maxLevelJoy)
+    $.log(`下地干活！ joyId= ${maxLevelJoyList[0].id} location= ${workJoyInfoUnlockList[0].location}`)
+    await doJoyMove(maxLevelJoyList[0].id, workJoyInfoUnlockList[0].location)
+    await getJoyList()
+    await doJoyMoveUpAll($.activityJoyList, $.workJoyInfoList)
+  }else if ($.JOY_COIN_MAXIMIZE) {
+    await joyCoinMaximize(workJoyInfoUnlockList)
+  }
+
+}
+
+async function joyCoinMaximize(workJoyInfoUnlockList) {
+  if (workJoyInfoUnlockList.length !== 0 && $.hasJoyCoin) {
+    $.log(`竟然还有工位挖土？开启瞎买瞎下地模式！`);
+    let joyBaseInfo = await getJoyBaseInfo()
+    let joyCoin = joyBaseInfo.joyCoin
+    $.log(`还有${joyCoin}金币,看看还能买啥下地`)
+    let shopList = await getGameShopList()
+    let newBuyCount = false;
+    for (let i = shopList.length - 1;i >= 0;i--){
+      if (joyCoin > shopList[i].consume) {
+        $.log(`买一只 ${shopList[i].userLevel}级的！`);
+        joyCoin = joyCoin - shopList[i].consume;
+        let buyResp = await doJoyBuy(shopList[i].userLevel);
+        if (!buyResp.success) {
+          break;
+        } else {
+          newBuyCount = true
+          $.hasJoyCoin = false
+          i++
+        }
+      }
+    }
+    $.hasJoyCoin = false
+    if (newBuyCount) {
+      await getJoyList()
+      await doJoyMoveUpAll($.activityJoyList,$.workJoyInfoList)
+      await getJoyBaseInfo();
+    }
+  }
+}
+
+async function doJoyMoveDownAll(workJoyInfoList) {
+  if (workJoyInfoList.filter(row => row.joyDTO).length === 0) {
+    $.log(`工位清理完成！`)
+    return true
+  }
+  for (let i = 0; i < workJoyInfoList.length; i++) {
+    //$.wait(50)
+    if (workJoyInfoList[i].unlock && workJoyInfoList[i].joyDTO) {
+      $.log(`从工位移除 => id:${workJoyInfoList[i].joyDTO.id}|name: ${workJoyInfoList[i].joyDTO.name}|level: ${workJoyInfoList[i].joyDTO.level}`)
+      await doJoyMove(workJoyInfoList[i].joyDTO.id, 0)
+    }
+  }
+  //check
+  await getJoyList()
+  await doJoyMoveDownAll($.workJoyInfoList)
+}
+
+async function doJoyMergeAll(activityJoyList) {
+  let minLevel = Math.min.apply(Math, activityJoyList.map(function (o) {
+    return o.level
+  }))
+  let joyMinLevelArr = activityJoyList.filter(row => row.level === minLevel);
+  let joyBaseInfo = await getJoyBaseInfo()
+  let fastBuyLevel = joyBaseInfo.fastBuyLevel
+  if (joyMinLevelArr.length >= 2) {
+    $.log(`开始合成 ${minLevel} ${joyMinLevelArr[0].id} <=> ${joyMinLevelArr[1].id} 【限流严重，2秒后合成！如失败会重试】`);
+    await $.wait(2000)
+    await doJoyMerge(joyMinLevelArr[0].id, joyMinLevelArr[1].id);
+    await getJoyList()
+    await doJoyMergeAll($.activityJoyList)
+  } else if (joyMinLevelArr.length === 1 && joyMinLevelArr[0].level < fastBuyLevel) {
+    let buyResp = await doJoyBuy(joyMinLevelArr[0].level);
+    if (buyResp.success) {
+      await getJoyList();
+      await doJoyMergeAll($.activityJoyList);
+    } else {
+      $.log("没钱了上位吧！")
+      await doJoyMoveUpAll($.activityJoyList, $.workJoyInfoList)
+    }
+  } else {
+    $.log(`没有需要合成的joy 开始买买买🛒🛒🛒🛒🛒🛒🛒🛒`)
+    $.log(`现在最高可以购买: ${fastBuyLevel}  购买 ${fastBuyLevel} 的joy   你还有${joyBaseInfo.joyCoin}金币`)
+    let buyResp = await doJoyBuy(fastBuyLevel);
+    if (buyResp.success) {
+      await getJoyList();
+      await doJoyMergeAll($.activityJoyList);
+    } else {
+      $.log("没钱了上位吧！")
+      await doJoyMoveUpAll($.activityJoyList, $.workJoyInfoList)
+    }
+  }
+}
+
+function doJoyMove(joyId,location){
+  //await $.wait(20)
+  return new Promise(resolve => {
+    $.post(taskGetClientActionUrl(`body={"joyId":${joyId},"location":${location},"linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&appid=activities_platform`,`joyMove`), async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
+        } else {
+          if (location !== 0) {
+            $.log(`下地完成了！`);
+          }
+          data = JSON.parse(data);
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve(data.data);
+      }
+    })
+  })
+}
+
+function doJoyMerge(joyId1,joyId2){
+  //await $.wait(20)
+  return new Promise(resolve => {
+    $.get(taskGetClientActionUrl(`body={"joyOneId":${joyId1},"joyTwoId":${joyId2},"linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&appid=activities_platform`,`joyMergeGet`), async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
+          data = {}
+        } else {
+          data = JSON.parse(data);$.log(`合成 ${joyId1} <=> ${joyId2} ${data.success ? `成功！` : `失败！【${data.errMsg}】 code=${data.code}`}`)
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve(data.data);
+      }
+    })
+  })
+}
+
+function doJoyBuy(level){
+  //await $.wait(20)
+  return new Promise(resolve => {
+    $.post(taskPostClientActionUrl(`body={"level":${level},"linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&appid=activities_platform`,`joyBuy`), async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
+        } else {
+          data = JSON.parse(data);
+          $.log(`购买joy level: ${level} ${data.success ? `成功！` : `失败！${data.errMsg} code=${data.code}`}`)
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve(data);
+      }
+    })
+  })
+}
+
+function taskPostClientActionUrl(body,functionId) {
+  return {
+    url: `https://api.m.jd.com/client.action?${functionId?`functionId=${functionId}`:``}`,
+    body: body,
+    headers: {
+      'User-Agent': $.user_agent,
+      'Content-Type':'application/x-www-form-urlencoded',
+      'Host':'api.m.jd.com',
+      'Origin':'https://joypark.jd.com',
+      'Referer':'https://joypark.jd.com/?activityId=LsQNxL7iWDlXUs6cFl-AAg&lng=113.387899&lat=22.512678&sid=4d76080a9da10fbb31f5cd43396ed6cw&un_area=19_1657_52093_0',
+      'Cookie': cookie,
+    }
+  }
+}
+
+function taskGetClientActionUrl(body,functionId) {
+  return {
+    url: `https://api.m.jd.com/client.action?functionId=${functionId}${body ? `&${body}` : ``}`,
+    // body: body,
+    headers: {
+      'User-Agent': $.user_agent,
+      'Content-Type':'application/x-www-form-urlencoded',
+      'Host':'api.m.jd.com',
+      'Origin':'https://joypark.jd.com',
+      'Referer':'https://joypark.jd.com/?activityId=LsQNxL7iWDlXUs6cFl-AAg&lng=113.388006&lat=22.512549&sid=4d76080a9da10fbb31f5cd43396ed6cw&un_area=19_1657_52093_0',
+      'Cookie': cookie,
+    }
+  }
+}
+
+function jsonParse(str) {
+  if (typeof str == "string") {
+    try {
+      return JSON.parse(str);
+    } catch (e) {
+      console.log(e);
+      $.msg($.name, '', '请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie')
+      return [];
+    }
+  }
+}
+// prettier-ignore
+function Env(t,e){class s{constructor(t){this.env=t}send(t,e="GET"){t="string"==typeof t?{url:t}:t;let s=this.get;return"POST"===e&&(s=this.post),new Promise((e,i)=>{s.call(this,t,(t,s,r)=>{t?i(t):e(s)})})}get(t){return this.send.call(this.env,t)}post(t){return this.send.call(this.env,t,"POST")}}return new class{constructor(t,e){this.name=t,this.http=new s(this),this.data=null,this.dataFile="box.dat",this.logs=[],this.isMute=!1,this.isNeedRewrite=!1,this.logSeparator="\n",this.startTime=(new Date).getTime(),Object.assign(this,e),this.log("",`🔔${this.name}, 开始!`)}isNode(){return"undefined"!=typeof module&&!!module.exports}isQuanX(){return"undefined"!=typeof $task}isSurge(){return"undefined"!=typeof $httpClient&&"undefined"==typeof $loon}isLoon(){return"undefined"!=typeof $loon}toObj(t,e=null){try{return JSON.parse(t)}catch{return e}}toStr(t,e=null){try{return JSON.stringify(t)}catch{return e}}getjson(t,e){let s=e;const i=this.getdata(t);if(i)try{s=JSON.parse(this.getdata(t))}catch{}return s}setjson(t,e){try{return this.setdata(JSON.stringify(t),e)}catch{return!1}}getScript(t){return new Promise(e=>{this.get({url:t},(t,s,i)=>e(i))})}runScript(t,e){return new Promise(s=>{let i=this.getdata("@chavy_boxjs_userCfgs.httpapi");i=i?i.replace(/\n/g,"").trim():i;let r=this.getdata("@chavy_boxjs_userCfgs.httpapi_timeout");r=r?1*r:20,r=e&&e.timeout?e.timeout:r;const[o,h]=i.split("@"),n={url:`http://${h}/v1/scripting/evaluate`,body:{script_text:t,mock_type:"cron",timeout:r},headers:{"X-Key":o,Accept:"*/*"}};this.post(n,(t,e,i)=>s(i))}).catch(t=>this.logErr(t))}loaddata(){if(!this.isNode())return{};{this.fs=this.fs?this.fs:require("fs"),this.path=this.path?this.path:require("path");const t=this.path.resolve(this.dataFile),e=this.path.resolve(process.cwd(),this.dataFile),s=this.fs.existsSync(t),i=!s&&this.fs.existsSync(e);if(!s&&!i)return{};{const i=s?t:e;try{return JSON.parse(this.fs.readFileSync(i))}catch(t){return{}}}}}writedata(){if(this.isNode()){this.fs=this.fs?this.fs:require("fs"),this.path=this.path?this.path:require("path");const t=this.path.resolve(this.dataFile),e=this.path.resolve(process.cwd(),this.dataFile),s=this.fs.existsSync(t),i=!s&&this.fs.existsSync(e),r=JSON.stringify(this.data);s?this.fs.writeFileSync(t,r):i?this.fs.writeFileSync(e,r):this.fs.writeFileSync(t,r)}}lodash_get(t,e,s){const i=e.replace(/\[(\d+)\]/g,".$1").split(".");let r=t;for(const t of i)if(r=Object(r)[t],void 0===r)return s;return r}lodash_set(t,e,s){return Object(t)!==t?t:(Array.isArray(e)||(e=e.toString().match(/[^.[\]]+/g)||[]),e.slice(0,-1).reduce((t,s,i)=>Object(t[s])===t[s]?t[s]:t[s]=Math.abs(e[i+1])>>0==+e[i+1]?[]:{},t)[e[e.length-1]]=s,t)}getdata(t){let e=this.getval(t);if(/^@/.test(t)){const[,s,i]=/^@(.*?)\.(.*?)$/.exec(t),r=s?this.getval(s):"";if(r)try{const t=JSON.parse(r);e=t?this.lodash_get(t,i,""):e}catch(t){e=""}}return e}setdata(t,e){let s=!1;if(/^@/.test(e)){const[,i,r]=/^@(.*?)\.(.*?)$/.exec(e),o=this.getval(i),h=i?"null"===o?null:o||"{}":"{}";try{const e=JSON.parse(h);this.lodash_set(e,r,t),s=this.setval(JSON.stringify(e),i)}catch(e){const o={};this.lodash_set(o,r,t),s=this.setval(JSON.stringify(o),i)}}else s=this.setval(t,e);return s}getval(t){return this.isSurge()||this.isLoon()?$persistentStore.read(t):this.isQuanX()?$prefs.valueForKey(t):this.isNode()?(this.data=this.loaddata(),this.data[t]):this.data&&this.data[t]||null}setval(t,e){return this.isSurge()||this.isLoon()?$persistentStore.write(t,e):this.isQuanX()?$prefs.setValueForKey(t,e):this.isNode()?(this.data=this.loaddata(),this.data[e]=t,this.writedata(),!0):this.data&&this.data[e]||null}initGotEnv(t){this.got=this.got?this.got:require("got"),this.cktough=this.cktough?this.cktough:require("tough-cookie"),this.ckjar=this.ckjar?this.ckjar:new this.cktough.CookieJar,t&&(t.headers=t.headers?t.headers:{},void 0===t.headers.Cookie&&void 0===t.cookieJar&&(t.cookieJar=this.ckjar))}get(t,e=(()=>{})){t.headers&&(delete t.headers["Content-Type"],delete t.headers["Content-Length"]),this.isSurge()||this.isLoon()?(this.isSurge()&&this.isNeedRewrite&&(t.headers=t.headers||{},Object.assign(t.headers,{"X-Surge-Skip-Scripting":!1})),$httpClient.get(t,(t,s,i)=>{!t&&s&&(s.body=i,s.statusCode=s.status),e(t,s,i)})):this.isQuanX()?(this.isNeedRewrite&&(t.opts=t.opts||{},Object.assign(t.opts,{hints:!1})),$task.fetch(t).then(t=>{const{statusCode:s,statusCode:i,headers:r,body:o}=t;e(null,{status:s,statusCode:i,headers:r,body:o},o)},t=>e(t))):this.isNode()&&(this.initGotEnv(t),this.got(t).on("redirect",(t,e)=>{try{if(t.headers["set-cookie"]){const s=t.headers["set-cookie"].map(this.cktough.Cookie.parse).toString();s&&this.ckjar.setCookieSync(s,null),e.cookieJar=this.ckjar}}catch(t){this.logErr(t)}}).then(t=>{const{statusCode:s,statusCode:i,headers:r,body:o}=t;e(null,{status:s,statusCode:i,headers:r,body:o},o)},t=>{const{message:s,response:i}=t;e(s,i,i&&i.body)}))}post(t,e=(()=>{})){if(t.body&&t.headers&&!t.headers["Content-Type"]&&(t.headers["Content-Type"]="application/x-www-form-urlencoded"),t.headers&&delete t.headers["Content-Length"],this.isSurge()||this.isLoon())this.isSurge()&&this.isNeedRewrite&&(t.headers=t.headers||{},Object.assign(t.headers,{"X-Surge-Skip-Scripting":!1})),$httpClient.post(t,(t,s,i)=>{!t&&s&&(s.body=i,s.statusCode=s.status),e(t,s,i)});else if(this.isQuanX())t.method="POST",this.isNeedRewrite&&(t.opts=t.opts||{},Object.assign(t.opts,{hints:!1})),$task.fetch(t).then(t=>{const{statusCode:s,statusCode:i,headers:r,body:o}=t;e(null,{status:s,statusCode:i,headers:r,body:o},o)},t=>e(t));else if(this.isNode()){this.initGotEnv(t);const{url:s,...i}=t;this.got.post(s,i).then(t=>{const{statusCode:s,statusCode:i,headers:r,body:o}=t;e(null,{status:s,statusCode:i,headers:r,body:o},o)},t=>{const{message:s,response:i}=t;e(s,i,i&&i.body)})}}time(t,e=null){const s=e?new Date(e):new Date;let i={"M+":s.getMonth()+1,"d+":s.getDate(),"H+":s.getHours(),"m+":s.getMinutes(),"s+":s.getSeconds(),"q+":Math.floor((s.getMonth()+3)/3),S:s.getMilliseconds()};/(y+)/.test(t)&&(t=t.replace(RegExp.$1,(s.getFullYear()+"").substr(4-RegExp.$1.length)));for(let e in i)new RegExp("("+e+")").test(t)&&(t=t.replace(RegExp.$1,1==RegExp.$1.length?i[e]:("00"+i[e]).substr((""+i[e]).length)));return t}msg(e=t,s="",i="",r){const o=t=>{if(!t)return t;if("string"==typeof t)return this.isLoon()?t:this.isQuanX()?{"open-url":t}:this.isSurge()?{url:t}:void 0;if("object"==typeof t){if(this.isLoon()){let e=t.openUrl||t.url||t["open-url"],s=t.mediaUrl||t["media-url"];return{openUrl:e,mediaUrl:s}}if(this.isQuanX()){let e=t["open-url"]||t.url||t.openUrl,s=t["media-url"]||t.mediaUrl;return{"open-url":e,"media-url":s}}if(this.isSurge()){let e=t.url||t.openUrl||t["open-url"];return{url:e}}}};if(this.isMute||(this.isSurge()||this.isLoon()?$notification.post(e,s,i,o(r)):this.isQuanX()&&$notify(e,s,i,o(r))),!this.isMuteLog){let t=["","==============📣系统通知📣=============="];t.push(e),s&&t.push(s),i&&t.push(i),console.log(t.join("\n")),this.logs=this.logs.concat(t)}}log(...t){t.length>0&&(this.logs=[...this.logs,...t]),console.log(t.join(this.logSeparator))}logErr(t,e){const s=!this.isSurge()&&!this.isQuanX()&&!this.isLoon();s?this.log("",`❗️${this.name}, 错误!`,t.stack):this.log("",`❗️${this.name}, 错误!`,t)}wait(t){return new Promise(e=>setTimeout(e,t))}done(t={}){const e=(new Date).getTime(),s=(e-this.startTime)/1e3;this.log("",`🔔${this.name}, 结束! 🕛 ${s} 秒`),this.log(),(this.isSurge()||this.isQuanX()||this.isLoon())&&$done(t)}}(t,e)}
