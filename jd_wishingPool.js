@@ -40,8 +40,9 @@ var axios_1 = require("axios");
 var TS_USER_AGENTS_1 = require("./TS_USER_AGENTS");
 var $ = {};
 var cookie = '', cookiesArr = [];
+var balance;
 !(function () { return __awaiter(void 0, void 0, void 0, function () {
-    var i, taskVos, tasks, _i, tasks_1, t, _a, _b, tp, _c, _d, tp, _e, _f, tp;
+    var i, taskVos, res, tasks, _i, tasks_1, t, _a, _b, tp, _c, _d, tp, _e, _f, tp;
     return __generator(this, function (_g) {
         switch (_g.label) {
             case 0: return [4 /*yield*/, requireConfig()];
@@ -50,7 +51,7 @@ var cookie = '', cookiesArr = [];
                 i = 0;
                 _g.label = 2;
             case 2:
-                if (!(i < cookiesArr.length)) return [3 /*break*/, 19];
+                if (!(i < cookiesArr.length)) return [3 /*break*/, 24];
                 cookie = cookiesArr[i];
                 $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^;]*)/)[1]);
                 $.index = i + 1;
@@ -63,64 +64,90 @@ var cookie = '', cookiesArr = [];
                 return [4 /*yield*/, api('healthyDay_getHomeData', { "appId": "1EFVQwQ", "taskToken": "", "channelId": 1 })];
             case 4:
                 taskVos = _g.sent();
-                tasks = taskVos.data.result.taskVos;
-                _i = 0, tasks_1 = tasks;
+                if (JSON.stringify(taskVos.data.success) === 'false') {
+                    console.log('此号活动火爆');
+                    return [3 /*break*/, 23];
+                }
+                balance = taskVos.data.result.userInfo.userScore * 1;
+                console.log('余额:', balance);
                 _g.label = 5;
             case 5:
-                if (!(_i < tasks_1.length)) return [3 /*break*/, 18];
-                t = tasks_1[_i];
-                console.log(t.taskName);
-                if (!(t.status === 1)) return [3 /*break*/, 17];
-                if (!t.shoppingActivityVos) return [3 /*break*/, 9];
-                _a = 0, _b = t.shoppingActivityVos;
-                _g.label = 6;
+                if (!(balance >= 500)) return [3 /*break*/, 7];
+                console.log('exchange()');
+                return [4 /*yield*/, api('interact_template_getLotteryResult', { "appId": "1EFVQwQ" })
+                    // console.log('抽奖结果:', res.data.result.lotteryReturnCode)
+                ];
             case 6:
-                if (!(_a < _b.length)) return [3 /*break*/, 9];
-                tp = _b[_a];
-                return [4 /*yield*/, doTask(tp.taskToken, t.taskId, t.waitDuration)];
+                res = _g.sent();
+                // console.log('抽奖结果:', res.data.result.lotteryReturnCode)
+                console.log('抽奖结果:', res.data);
+                balance -= 500;
+                return [3 /*break*/, 5];
             case 7:
-                _g.sent();
+                tasks = taskVos.data.result.taskVos;
+                _i = 0, tasks_1 = tasks;
                 _g.label = 8;
             case 8:
-                _a++;
-                return [3 /*break*/, 6];
+                if (!(_i < tasks_1.length)) return [3 /*break*/, 21];
+                t = tasks_1[_i];
+                console.log(t.taskName);
+                if (!(t.status === 1)) return [3 /*break*/, 20];
+                if (!t.shoppingActivityVos) return [3 /*break*/, 12];
+                _a = 0, _b = t.shoppingActivityVos;
+                _g.label = 9;
             case 9:
-                if (!t.productInfoVos) return [3 /*break*/, 13];
-                _c = 0, _d = t.productInfoVos;
-                _g.label = 10;
+                if (!(_a < _b.length)) return [3 /*break*/, 12];
+                tp = _b[_a];
+                return [4 /*yield*/, doTask(tp.taskToken, t.taskId, t.waitDuration)];
             case 10:
-                if (!(_c < _d.length)) return [3 /*break*/, 13];
+                _g.sent();
+                _g.label = 11;
+            case 11:
+                _a++;
+                return [3 /*break*/, 9];
+            case 12:
+                if (!t.productInfoVos) return [3 /*break*/, 16];
+                _c = 0, _d = t.productInfoVos;
+                _g.label = 13;
+            case 13:
+                if (!(_c < _d.length)) return [3 /*break*/, 16];
                 tp = _d[_c];
                 console.log(tp.skuName, tp.taskToken);
                 return [4 /*yield*/, doTask(tp.taskToken, t.taskId, t.waitDuration)];
-            case 11:
-                _g.sent();
-                _g.label = 12;
-            case 12:
-                _c++;
-                return [3 /*break*/, 10];
-            case 13:
-                if (!t.followShopVo) return [3 /*break*/, 17];
-                _e = 0, _f = t.followShopVo;
-                _g.label = 14;
             case 14:
-                if (!(_e < _f.length)) return [3 /*break*/, 17];
+                _g.sent();
+                _g.label = 15;
+            case 15:
+                _c++;
+                return [3 /*break*/, 13];
+            case 16:
+                if (!t.followShopVo) return [3 /*break*/, 20];
+                _e = 0, _f = t.followShopVo;
+                _g.label = 17;
+            case 17:
+                if (!(_e < _f.length)) return [3 /*break*/, 20];
                 tp = _f[_e];
                 console.log(tp.shopName, tp.taskToken);
                 return [4 /*yield*/, doTask(tp.taskToken, t.taskId, 0)];
-            case 15:
-                _g.sent();
-                _g.label = 16;
-            case 16:
-                _e++;
-                return [3 /*break*/, 14];
-            case 17:
-                _i++;
-                return [3 /*break*/, 5];
             case 18:
+                _g.sent();
+                _g.label = 19;
+            case 19:
+                _e++;
+                return [3 /*break*/, 17];
+            case 20:
+                _i++;
+                return [3 /*break*/, 8];
+            case 21:
+                console.log('-------------------------------');
+                return [4 /*yield*/, wait(1000)];
+            case 22:
+                _g.sent();
+                _g.label = 23;
+            case 23:
                 i++;
                 return [3 /*break*/, 2];
-            case 19: return [2 /*return*/];
+            case 24: return [2 /*return*/];
         }
     });
 }); })();
