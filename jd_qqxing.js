@@ -17,7 +17,7 @@ const randomCount = $.isNode() ? 20 : 5;
 const notify = $.isNode() ? require('./sendNotify') : '';
 let merge = {}
 let codeList = []
-Exchange = $.isNode() ? (process.env.Cowexchange ? process.env.Cowexchange : false) : ($.getdata("Cowexchange") ? $.getdata("Cowexchange") : false);
+Exchange = true;
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [],
     cookie = '';
@@ -81,7 +81,7 @@ $.shareuuid = "b7b38d35069342ce8acab8f56d8d9448"
                     if (task.taskid == "interact") {
                         for (l = 0; l < 20 - task.curNum; l++) {
                             await dotask(task.taskid, task.params)
-                            await $.wait(500)
+                            await $.wait(3000)
                         }
                     } else if (task.taskid == "scansku") {
                         await getproduct()
@@ -89,7 +89,7 @@ $.shareuuid = "b7b38d35069342ce8acab8f56d8d9448"
                         await dotask(task.taskid, $.pparam)
                     } else {
                         await dotask(task.taskid, task.params)
-                        await $.wait(500)
+                        await $.wait(3000)
                     }
                 }
                 await getinfo()
